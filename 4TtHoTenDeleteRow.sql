@@ -1,0 +1,8 @@
+USE [a08VXTHE_SaleJ]
+GO
+
+DELETE FROM DMMH
+      WHERE gia < 5000
+GO
+
+

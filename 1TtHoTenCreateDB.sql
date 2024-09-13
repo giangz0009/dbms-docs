@@ -1,0 +1,25 @@
+USE [master]
+GO
+/****** Object:  Database [a08VXTHE_SaleJP]    Script Date: 08/05/2024 8:22:41 PM ******/
+DROP DATABASE [a08VXTHE_SaleJP]
+GO
+/****** Object:  Database [a08VXTHE_SaleJP]    Script Date: 08/05/2024 8:22:41 PM ******/
+USE [master]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+/****** Object:  Database [a08VXTHE_SaleJP]    Script Date: 08/05/2024 8:08:38 PM ******/
+CREATE DATABASE [a08VXTHE_SaleJP]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'a08VXTHE_SaleJP', 
+  FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\a08VXTHE_SaleJP.mdf', 
+  SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'a08VXTHE_SaleJP_log', 
+FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\a08VXTHE_SaleJP_log.ldf',
+  SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT
+GO

@@ -1,0 +1,7 @@
+USE [a08VXTHE_SaleJ]
+GO
+
+SELECT * FROM DMMH WHERE dvt = N'Cái' AND  gia > '500000'
+GO
+
+

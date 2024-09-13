@@ -1,0 +1,236 @@
+/****** CÁC CÂU LỆNH ĐIỀU KHIỂN BAN ĐÂU******/
+USE [a08VXTHE_SaleJP]
+GO
+/****** Object:  Table [dbo].[DMMH]    Script Date: 15/05/2024 7:30:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+/****** Table: DMNSX ***chỉ có PK làm trước: KO CÓ Dây liên kết***/
+CREATE TABLE [dbo].[DMNSX](
+	[msnsx] [nchar](20) NOT NULL,
+	[tennsx] [nvarchar](150) NULL,
+	[nuoc] [nvarchar](50) NULL,
+ CONSTRAINT [PK_DMNSX] PRIMARY KEY CLUSTERED 
+(
+	[msnsx] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Table: DMCSBH ***chỉ có PK làm trước***/
+CREATE TABLE [dbo].[DMCSBH](
+	[mscsbh] [nchar](20) NOT NULL,
+	[tencsbh] [nvarchar](150) NULL,
+	[dc] [nvarchar](200) NULL,
+	[sodt] [nchar](10) NULL,
+	[succhua] [float] NULL,
+	[controng] [float] NULL,
+ CONSTRAINT [PK_DMCSBH] PRIMARY KEY CLUSTERED 
+ ([mscsbh] ASC
+ )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)ON [PRIMARY]
+GO
+
+/****** Table: DMNV ***chỉ có PK làm trước***/
+CREATE TABLE [dbo].[DMNV](
+	[msnv] [nchar](20) NOT NULL,
+	[hoten] [nvarchar](150) NULL,
+	[sodt] [nchar](10) NULL,
+ CONSTRAINT [PK_DMNV] PRIMARY KEY CLUSTERED 
+([msnv] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+/****** Table: DMKH ***chỉ có PK làm trước***/
+CREATE TABLE [dbo].[DMKH](
+	[mskh] [nchar](20) NOT NULL,
+	[tenkh] [nvarchar](250) NULL,
+	[dc] [nvarchar](250) NULL,
+	[sodt] [nchar](10) NULL,
+	[msthue] [nchar](14) NULL,
+	[diem] [int] NULL,
+ CONSTRAINT [PK_DMKH] PRIMARY KEY CLUSTERED 
+(
+	[mskh] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Table: DMMH ***thực hiện sau DMNSX***/
+CREATE TABLE [dbo].[DMMH]
+(
+	[msmh] [nchar](20) NOT NULL,
+	[tenmh] [nvarchar](150) NULL,
+	[dvt] [nvarchar](50) NULL,
+	[gia] [float] NULL,
+	[ngaysx] [date] NULL,
+	[hansd] [date] NULL,
+	[mota] [nvarchar](250) NULL,
+	[hinh] [nchar](150) NULL,
+	[msnsx] [nchar](20) NULL,
+ CONSTRAINT [PK_DMMH] PRIMARY KEY CLUSTERED 
+([msmh] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, 
+  ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF
+)ON [PRIMARY]
+)ON [PRIMARY]
+GO
+/****** các mối liên kết của DMMH với các Tables khác bởi FK của nó ******/
+/**DMMH[msnsx] <=FK==PK=> [msnsx]DMNSX  */
+ALTER TABLE [dbo].[DMMH]  WITH CHECK ADD  CONSTRAINT [FK_DMMH_DMNSX] FOREIGN KEY([msnsx])
+REFERENCES [dbo].[DMNSX] ([msnsx])
+GO
+ALTER TABLE [dbo].[DMMH] CHECK CONSTRAINT [FK_DMMH_DMNSX]
+GO
+/****** Table: DMHD ***thực hiện sau DMNV & DMKH***/
+CREATE TABLE [dbo].[DMHD](
+	[mshd] [nchar](20) NOT NULL,
+	[ngaylap] [date] NULL,
+	[mskh] [nchar](20) NULL,
+	[msnv] [nchar](20) NULL,
+	[diengiai] [nvarchar](250) NULL,
+	[loai] [int] NULL,
+ CONSTRAINT [PK_DMHD] PRIMARY KEY CLUSTERED 
+(
+	[mshd] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[DMHD]  WITH CHECK ADD  CONSTRAINT [FK_DMHD_DMKH] FOREIGN KEY([mskh])
+REFERENCES [dbo].[DMKH] ([mskh])
+GO
+
+ALTER TABLE [dbo].[DMHD] CHECK CONSTRAINT [FK_DMHD_DMKH]
+GO
+
+ALTER TABLE [dbo].[DMHD]  WITH CHECK ADD  CONSTRAINT [FK_DMHD_DMNV] FOREIGN KEY([msnv])
+REFERENCES [dbo].[DMNV] ([msnv])
+GO
+
+ALTER TABLE [dbo].[DMHD] CHECK CONSTRAINT [FK_DMHD_DMNV]
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'0: Hóa đơn bán lẻ;  1: Hóa đơn VAT' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'DMHD', @level2type=N'COLUMN',@level2name=N'loai'
+
+GO
+ 
+/****** Table: DMBILL ***thực hiện sau DMNV & DMKH & DMHD***/
+CREATE TABLE [dbo].[DMBILL](
+	[msbill] [nchar](20) NOT NULL,
+	[ngaylap] [date] NULL,
+	[mskh] [nchar](20) NULL,
+	[msnv] [nchar](20) NULL,
+	[mshd] [nchar](20) NULL,
+	[loai] [int] NULL,
+ CONSTRAINT [PK_DMBILL] PRIMARY KEY CLUSTERED 
+(
+	[msbill] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/* PHẦN dây liên kết trên Diagram */
+ALTER TABLE [dbo].[DMBILL]  WITH CHECK ADD  CONSTRAINT [FK_DMBILL_DMHD] FOREIGN KEY([mshd])
+REFERENCES [dbo].[DMHD] ([mshd])
+GO
+
+ALTER TABLE [dbo].[DMBILL] CHECK CONSTRAINT [FK_DMBILL_DMHD]
+GO
+
+ALTER TABLE [dbo].[DMBILL]  WITH CHECK ADD  CONSTRAINT [FK_DMBILL_DMKH] FOREIGN KEY([mskh])
+REFERENCES [dbo].[DMKH] ([mskh])
+GO
+
+ALTER TABLE [dbo].[DMBILL] CHECK CONSTRAINT [FK_DMBILL_DMKH]
+GO
+
+ALTER TABLE [dbo].[DMBILL]  WITH CHECK ADD  CONSTRAINT [FK_DMBILL_DMNV] FOREIGN KEY([msnv])
+REFERENCES [dbo].[DMNV] ([msnv])
+GO
+
+ALTER TABLE [dbo].[DMBILL] CHECK CONSTRAINT [FK_DMBILL_DMNV]
+GO
+
+
+
+/****** Table: TONHANG ***thực hiện sau DMMH & DMCSBH***/
+CREATE TABLE [dbo].[TONHANG](
+	[mscsbh] [nchar](20) NOT NULL,
+	[msmh] [nchar](20) NOT NULL,
+	[slton] [float] NULL,
+ CONSTRAINT [PK_TONHANG] PRIMARY KEY CLUSTERED 
+(
+	[mscsbh] ASC,
+	[msmh] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/* PHẦN dây liên kết trên Diagram */
+ALTER TABLE [dbo].[TONHANG]  WITH CHECK ADD  CONSTRAINT [FK_TONHANG_DMCSBH] FOREIGN KEY([mscsbh])
+REFERENCES [dbo].[DMCSBH] ([mscsbh])
+GO
+
+ALTER TABLE [dbo].[TONHANG] CHECK CONSTRAINT [FK_TONHANG_DMCSBH]
+GO
+
+ALTER TABLE [dbo].[TONHANG]  WITH CHECK ADD  CONSTRAINT [FK_TONHANG_DMMH] FOREIGN KEY([msmh])
+REFERENCES [dbo].[DMMH] ([msmh])
+GO
+
+ALTER TABLE [dbo].[TONHANG] CHECK CONSTRAINT [FK_TONHANG_DMMH]
+GO
+/****** Table: CT_HD ***thực hiện sau DMMH & DMHD***/
+CREATE TABLE [dbo].[CT_HD](
+	[mshd] [nchar](20) NOT NULL,
+	[msmh] [nchar](20) NOT NULL,
+	[sl] [float] NULL,
+ CONSTRAINT [PK_CT_HD] PRIMARY KEY CLUSTERED 
+(
+	[mshd] ASC,
+	[msmh] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/* PHẦN dây liên kết trên Diagram */
+ALTER TABLE [dbo].[CT_HD]  WITH CHECK ADD  CONSTRAINT [FK_CT_HD_DMHD] FOREIGN KEY([mshd])
+REFERENCES [dbo].[DMHD] ([mshd])
+GO
+
+ALTER TABLE [dbo].[CT_HD] CHECK CONSTRAINT [FK_CT_HD_DMHD]
+GO
+
+ALTER TABLE [dbo].[CT_HD]  WITH CHECK ADD  CONSTRAINT [FK_CT_HD_DMMH] FOREIGN KEY([msmh])
+REFERENCES [dbo].[DMMH] ([msmh])
+GO
+
+ALTER TABLE [dbo].[CT_HD] CHECK CONSTRAINT [FK_CT_HD_DMMH]
+GO
+
+
+/****** Table: CT_BILL ***thực hiện sau DMMH & DMBILL***/
+CREATE TABLE [dbo].[CT_BILL](
+	[msbill] [nchar](20) NOT NULL,
+	[msmh] [nchar](20) NOT NULL,
+	[sl] [float] NULL,
+ CONSTRAINT [PK_CT_BILL] PRIMARY KEY CLUSTERED 
+(
+	[msbill] ASC,
+	[msmh] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/* PHẦN dây liên kết trên Diagram */
+ALTER TABLE [dbo].[CT_BILL]  WITH CHECK ADD  CONSTRAINT [FK_CT_BILL_DMBILL] FOREIGN KEY([msbill])
+REFERENCES [dbo].[DMBILL] ([msbill])
+GO
+
+ALTER TABLE [dbo].[CT_BILL] CHECK CONSTRAINT [FK_CT_BILL_DMBILL]
+GO
+
+ALTER TABLE [dbo].[CT_BILL]  WITH CHECK ADD  CONSTRAINT [FK_CT_BILL_DMMH] FOREIGN KEY([msmh])
+REFERENCES [dbo].[DMMH] ([msmh])
+GO
+
+ALTER TABLE [dbo].[CT_BILL] CHECK CONSTRAINT [FK_CT_BILL_DMMH]
+GO
